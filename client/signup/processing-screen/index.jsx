@@ -15,7 +15,6 @@ import { connect } from 'react-redux';
  * Internal dependencies
  */
 import { showOAuth2Layout } from 'state/ui/oauth2-clients/selectors';
-import config from 'config';
 import { getCurrentUser } from 'state/current-user/selectors';
 
 /**
@@ -136,38 +135,14 @@ export class SignupProcessingScreen extends Component {
 			  );
 	}
 
-	showChecklistAfterLogin = () =>
-		this.props.loginHandler( { redirectTo: `/checklist/${ this.state.siteSlug }` } );
-
-	shouldShowChecklist() {
-		const designType = ( this.props.steps || [] ).reduce( function( accumulator, step ) {
-			return accumulator || ( step.providedDependencies && step.providedDependencies.designType );
-		}, null );
-
-		return (
-			config.isEnabled( 'onboarding-checklist' ) &&
-			'store' !== designType &&
-			[
-				'main',
-				'onboarding',
-				'onboarding-dev',
-				'onboarding-for-business',
-				'desktop',
-				'subdomain',
-			].includes( this.props.flowName )
-		);
-	}
-
-	componentDidUpdate = () => {
+	render() {
 		const { loginHandler } = this.props;
 
 		if ( !! loginHandler ) {
 			loginHandler();
 			return null;
 		}
-	};
 
-	render() {
 		/* eslint-disable wpcalypso/jsx-classname-namespace */
 		return (
 			<div>

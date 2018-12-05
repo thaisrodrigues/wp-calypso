@@ -11,7 +11,10 @@ import { noop } from 'lodash';
 import config from 'config';
 import { addQueryArgs } from 'lib/route';
 
-export function generateFlows( { getSiteDestination = noop, getPostsDestination = noop } = {} ) {
+export function generateFlows( {
+	getSiteDestination = noop,
+	getChecklistDestination = noop,
+} = {} ) {
 	const flows = {
 		account: {
 			steps: [ 'user' ],
@@ -88,22 +91,27 @@ export function generateFlows( { getSiteDestination = noop, getPostsDestination 
 		},
 
 		subdomain: {
+<<<<<<< HEAD
 			steps: [ 'design-type', 'themes', 'site-topic', 'domains', 'plans', 'user' ],
 			destination: getSiteDestination,
+=======
+			steps: [ 'design-type', 'themes', 'domains', 'plans', 'user' ],
+			destination: getChecklistDestination,
+>>>>>>> Update the flows that are meant to go to the checklist in their definitions
 			description: 'Provide a vertical for subdomains',
 			lastModified: '2016-10-31',
 		},
 
 		main: {
 			steps: [ 'user', 'about', 'domains', 'plans' ],
-			destination: getSiteDestination,
+			destination: getChecklistDestination,
 			description: 'The current best performing flow in AB tests',
 			lastModified: '2018-10-16',
 		},
 
 		onboarding: {
 			steps: [ 'user', 'site-type', 'site-topic', 'site-information', 'domains', 'plans' ],
-			destination: getSiteDestination,
+			destination: getChecklistDestination,
 			description: 'The improved onboarding flow.',
 			lastModified: '2019-01-24',
 		},
@@ -123,6 +131,7 @@ export function generateFlows( { getSiteDestination = noop, getPostsDestination 
 		},
 
 		'onboarding-dev': {
+<<<<<<< HEAD
 			steps: [
 				'user',
 				'site-type',
@@ -133,6 +142,10 @@ export function generateFlows( { getSiteDestination = noop, getPostsDestination 
 				'plans',
 			],
 			destination: getSiteDestination,
+=======
+			steps: [ 'user', 'site-type', 'site-topic', 'site-information', 'domains', 'plans' ],
+			destination: getChecklistDestination,
+>>>>>>> Update the flows that are meant to go to the checklist in their definitions
 			description: 'A temporary flow for holding under-development steps',
 			lastModified: '2019-01-10',
 		},
@@ -166,7 +179,7 @@ export function generateFlows( { getSiteDestination = noop, getPostsDestination 
 
 		desktop: {
 			steps: [ 'about', 'themes', 'domains', 'plans', 'user' ],
-			destination: getPostsDestination,
+			destination: getChecklistDestination,
 			description: 'Signup flow for desktop app',
 			lastModified: '2018-01-24',
 		},
