@@ -452,12 +452,6 @@ export class Checkout extends React.Component {
 			return redirectTo;
 		}
 
-		if ( this.props.isEligibleForCheckoutToChecklist && receipt ) {
-			const destination = abtest( 'improvedOnboarding' ) === 'main' ? 'checklist' : 'view';
-
-			return `/${ destination }/${ selectedSiteSlug }`;
-		}
-
 		/**
 		 * @TODO Enable when plan setup is completed on the My Plan page
 		 *
