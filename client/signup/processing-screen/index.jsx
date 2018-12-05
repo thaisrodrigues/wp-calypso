@@ -161,8 +161,8 @@ export class SignupProcessingScreen extends Component {
 	componentDidUpdate = () => {
 		const { loginHandler } = this.props;
 
-		if ( loginHandler ) {
-			this.shouldShowChecklist() ? this.showChecklistAfterLogin() : loginHandler();
+		if ( !! loginHandler ) {
+			loginHandler();
 			return null;
 		}
 	};

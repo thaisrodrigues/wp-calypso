@@ -352,6 +352,7 @@ export class Checkout extends React.Component {
 			transaction: {
 				step: { data: receipt },
 			},
+			redirectTo,
 		} = this.props;
 		const domainReceiptId = get(
 			cartItems.getGoogleApps( cart ),
@@ -445,6 +446,10 @@ export class Checkout extends React.Component {
 			// A user just purchased one of the qualifying plans
 			// Show them the concierge session upsell page
 			return `/checkout/${ selectedSiteSlug }/add-support-session/${ receiptId }`;
+		}
+
+		if ( redirectTo ) {
+			return redirectTo;
 		}
 
 		if ( this.props.isEligibleForCheckoutToChecklist && receipt ) {
