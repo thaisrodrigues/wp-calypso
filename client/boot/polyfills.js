@@ -2,7 +2,8 @@
 /**
  * External dependencies
  */
-import '@babel/polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
 /**
  * Internal dependencies
