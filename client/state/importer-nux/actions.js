@@ -11,6 +11,9 @@ import { trim } from 'lodash';
 import {
 	IMPORT_IS_SITE_IMPORTABLE_ERROR,
 	IMPORT_IS_SITE_IMPORTABLE_RECEIVE,
+	IMPORT_SIGNUP_SITE_PREVIEW_ERROR,
+	IMPORT_SIGNUP_SITE_PREVIEW_FETCH,
+	IMPORT_SIGNUP_SITE_PREVIEW_RECEIVE,
 	IMPORTER_NUX_URL_INPUT_SET,
 	IMPORTER_NUX_FROM_SIGNUP_CLEAR,
 	IMPORTER_NUX_FROM_SIGNUP_SET,
@@ -78,6 +81,10 @@ export const submitImportUrlStep = ( { stepName, siteUrl: siteUrlFromInput } ) =
 			if ( error ) {
 				throw new Error( error );
 			}
+
+			dispatch( {
+				type: IMPORT_SIGNUP_SITE_PREVIEW_FETCH,
+			} );
 
 			const imageBlob = await loadmShotsPreview( {
 				url: normalizeUrl( siteUrlFromInput ),
