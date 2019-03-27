@@ -347,6 +347,7 @@ export class Checkout extends React.Component {
 		let renewalItem;
 		const {
 			cart,
+			redirectTo,
 			selectedSite,
 			selectedSiteSlug,
 			transaction: {
@@ -452,11 +453,8 @@ export class Checkout extends React.Component {
 		}
 
 		if ( this.props.isEligibleForCheckoutToChecklist && receipt ) {
-			analytics.tracks.recordEvent( 'calypso_checklist_assign', {
-				site: selectedSiteSlug,
-				plan: 'paid',
-			} );
-			return `/checklist/${ selectedSiteSlug }`;
+			const destination = abtest( 'improvedOnboarding' ) === 'main' ? 'checklist' : 'view';
+			return `/${ destination }/${ selectedSiteSlug }`;
 		}
 
 		/**

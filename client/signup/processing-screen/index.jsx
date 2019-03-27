@@ -135,14 +135,16 @@ export class SignupProcessingScreen extends Component {
 			  );
 	}
 
-	render() {
+	componentDidUpdate = () => {
 		const { loginHandler } = this.props;
 
-		if ( !! loginHandler ) {
+		if ( loginHandler ) {
 			loginHandler();
 			return null;
 		}
+	};
 
+	render() {
 		/* eslint-disable wpcalypso/jsx-classname-namespace */
 		return (
 			<div>

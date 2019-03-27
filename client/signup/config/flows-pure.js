@@ -91,13 +91,8 @@ export function generateFlows( {
 		},
 
 		subdomain: {
-<<<<<<< HEAD
 			steps: [ 'design-type', 'themes', 'site-topic', 'domains', 'plans', 'user' ],
-			destination: getSiteDestination,
-=======
-			steps: [ 'design-type', 'themes', 'domains', 'plans', 'user' ],
 			destination: getChecklistDestination,
->>>>>>> Update the flows that are meant to go to the checklist in their definitions
 			description: 'Provide a vertical for subdomains',
 			lastModified: '2016-10-31',
 		},
@@ -131,7 +126,6 @@ export function generateFlows( {
 		},
 
 		'onboarding-dev': {
-<<<<<<< HEAD
 			steps: [
 				'user',
 				'site-type',
@@ -141,11 +135,7 @@ export function generateFlows( {
 				'domains-with-preview',
 				'plans',
 			],
-			destination: getSiteDestination,
-=======
-			steps: [ 'user', 'site-type', 'site-topic', 'site-information', 'domains', 'plans' ],
 			destination: getChecklistDestination,
->>>>>>> Update the flows that are meant to go to the checklist in their definitions
 			description: 'A temporary flow for holding under-development steps',
 			lastModified: '2019-01-10',
 		},
