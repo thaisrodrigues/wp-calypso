@@ -48,6 +48,11 @@ import PageViewTracker from 'lib/analytics/page-view-tracker';
 import { recordTracksEvent as recordTracksEventAction } from 'state/analytics/actions';
 
 /**
+ * Style dependencies
+ */
+import './style.scss';
+
+/**
  * Module variables
  */
 const debug = debugModule( 'calypso:my-sites:people:invite' );
