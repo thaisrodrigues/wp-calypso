@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import classNames from 'classnames';
 import page from 'page';
+import Gridicon from 'gridicons';
 
 /**
  * Internal Dependencies
@@ -30,6 +31,7 @@ import { getAdminSectionsResults } from './admin-sections';
 import { localizeUrl } from 'lib/i18n-utils';
 import { getSiteSlug } from 'state/sites/selectors';
 import { getSelectedSiteId } from 'state/ui/selectors';
+import getPrimarySiteId from 'state/selectors/get-primary-site-id';
 
 class InlineHelpSearchResults extends Component {
 	static propTypes = {
@@ -58,11 +60,10 @@ class InlineHelpSearchResults extends Component {
 
 		return (
 			<div className="inline-help__search-results">
-				<h2 className="inline-help__view-heading">Support documentation:</h2>
 				{ isEmpty( searchResults ) ? (
 					<>
 						<p className="inline-help__empty-results">
-							Sorry, there were no matches. Here are some of the most searched after help pages for
+							Sorry, there were no matches. Here are some of the most searched for help pages for
 							this section:
 						</p>
 						{ this.renderContextHelp() }
@@ -90,6 +91,7 @@ class InlineHelpSearchResults extends Component {
 					onClick={ onClick }
 					title={ decodeEntities( link.description ) }
 				>
+					{ link.icon && <Gridicon icon={ link.icon } size={ 18 } /> }
 					{ preventWidows( decodeEntities( link.title ) ) }
 				</a>
 			</li>
@@ -113,7 +115,7 @@ class InlineHelpSearchResults extends Component {
 
 		return (
 			<div className="inline-help__find-section">
-				<h2 className="inline-help__view-heading">Go directly to:</h2>
+				<h2 className="inline-help__view-heading">Show me where I can:</h2>
 				<ul className="inline-help__results-list">
 					{ results && results.map( this.renderHelpLink ) }
 				</ul>
@@ -155,14 +157,17 @@ class InlineHelpSearchResults extends Component {
 	}
 }
 
-const mapStateToProps = ( state, ownProps ) => ( {
-	lastRoute: getLastRouteAction( state ),
-	searchResults: getInlineHelpSearchResultsForQuery( state, ownProps.searchQuery ),
-	isSearching: isRequestingInlineHelpSearchResultsForQuery( state, ownProps.searchQuery ),
-	selectedResultIndex: getSelectedResultIndex( state ),
-	siteSlug: getSiteSlug( state, getSelectedSiteId( state ) ),
-	siteId: getSelectedSiteId( state ),
-} );
+const mapStateToProps = ( state, ownProps ) => {
+	const siteId = getSelectedSiteId( state ) || getPrimarySiteId( state );
+	return {
+		lastRoute: getLastRouteAction( state ),
+		searchResults: getInlineHelpSearchResultsForQuery( state, ownProps.searchQuery ),
+		isSearching: isRequestingInlineHelpSearchResultsForQuery( state, ownProps.searchQuery ),
+		selectedResultIndex: getSelectedResultIndex( state ),
+		siteSlug: getSiteSlug( state, siteId ),
+		siteId,
+	};
+};
 
 const mapDispatchToProps = {
 	recordTracksEvent,
