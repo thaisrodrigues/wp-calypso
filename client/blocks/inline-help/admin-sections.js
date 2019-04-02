@@ -11,11 +11,10 @@ import { intersection, memoize, words } from 'lodash';
 /**
  * Returns admin section items with site-based urls
  *
- * @param {Int} siteId The currentsite id
  * @param {String} siteSlug The current site slug
  * @returns {Array} An array of admin sections with site-specific URLs
  */
-const adminSections = memoize( ( siteSlug, siteId ) => [
+const adminSections = memoize( siteSlug => [
 	{
 		title: 'Add a new domain',
 		description: 'Set up your domain whether it’s registered with WordPress.com or elsewhere.',
@@ -25,13 +24,13 @@ const adminSections = memoize( ( siteSlug, siteId ) => [
 	{
 		title: 'Manage my domain settings',
 		description: 'Manage your domain settings',
-		link: `/domains/manage/{site_slug}/edit/${ siteSlug }`,
+		link: `/domains/manage/${ siteSlug }`,
 		icon: 'domains',
 	},
 	{
 		title: 'Change my site address',
 		description: '',
-		link: `/domains/manage/{site_slug}/edit/${ siteSlug }`,
+		link: `/domains/manage/${ siteSlug }`,
 		synonyms: [ 'domain' ],
 		icon: 'domains',
 	},
@@ -64,14 +63,14 @@ const adminSections = memoize( ( siteSlug, siteId ) => [
 	{
 		title: "View my site's latest statistics",
 		description: '',
-		link: `/stats/day/${ siteId }`,
+		link: `/stats/day/${ siteSlug }`,
 		synonyms: [ 'analytics' ],
 		icon: 'stats-alt',
 	},
 	{
 		title: 'Upload an image, video, audio or document',
 		description: '',
-		link: `/media/${ siteId }`,
+		link: `/media/${ siteSlug }`,
 		synonyms: [ 'media', 'photo' ],
 		icon: 'image',
 	},
@@ -229,7 +228,7 @@ const adminSections = memoize( ( siteSlug, siteId ) => [
  * @param {Array} collection A collection of site admin objects
  * @returns {Array?} An filtered array
  */
-export function filterListBySearchTerm( searchTerm = '', collection ) {
+export function filterListBySearchTerm( searchTerm = '', collection = [] ) {
 	const searchTermWords = words( searchTerm ).map( word => word.toLowerCase() );
 
 	if ( searchTermWords.length < 1 ) {
@@ -255,21 +254,20 @@ export function filterListBySearchTerm( searchTerm = '', collection ) {
 			item =>
 				searchRegex.test( item.title ) || intersection( item.synonyms, searchTermWords ).length
 		)
-		.map( item => ( { ...item, type: 'internal' } ) );
+		.map( item => ( { ...item, type: 'internal', key: item.title } ) );
 }
 
 /**
  * Returns a filtered site admin collection using the memoized adminSections.
  *
  * @param {String} searchTerm The search term
- * @param {siteSlug} siteSlug The curent site slug
- * @param {Int} siteId The current site id
- * @returns {Array?} An filtered array
+ * @param {String} siteSlug The current site slug
+ * @returns {Array} An filtered array
  */
-export function getAdminSectionsResults( searchTerm = '', siteSlug, siteId ) {
-	if ( ! siteSlug || ! searchTerm || ! siteId ) {
+export function getAdminSectionsResults( searchTerm = '', siteSlug ) {
+	if ( ! searchTerm ) {
 		return;
 	}
 
-	return filterListBySearchTerm( searchTerm, adminSections( siteId, siteSlug ) );
+	return filterListBySearchTerm( searchTerm, adminSections( siteSlug || '' ) );
 }

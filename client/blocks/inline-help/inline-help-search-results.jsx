@@ -31,7 +31,6 @@ import { getAdminSectionsResults } from './admin-sections';
 import { localizeUrl } from 'lib/i18n-utils';
 import { getSiteSlug } from 'state/sites/selectors';
 import { getSelectedSiteId } from 'state/ui/selectors';
-import getPrimarySiteId from 'state/selectors/get-primary-site-id';
 
 class InlineHelpSearchResults extends Component {
 	static propTypes = {
@@ -81,11 +80,9 @@ class InlineHelpSearchResults extends Component {
 		const classes = { 'is-selected': this.props.selectedResultIndex === index };
 		const onClick =
 			link.type === 'internal' ? this.onInternalLinkClick : this.onHelpLinkClick( index );
+		const key = link.key ? link.key : link.link;
 		return (
-			<li
-				key={ link.link ? link.link : link.key }
-				className={ classNames( 'inline-help__results-item', classes ) }
-			>
+			<li key={ key } className={ classNames( 'inline-help__results-item', classes ) }>
 				<a
 					href={ localizeUrl( link.link ) }
 					onClick={ onClick }
@@ -99,17 +96,13 @@ class InlineHelpSearchResults extends Component {
 	};
 
 	renderAdminSectionResults() {
-		if ( ! this.props.siteSlug || isEmpty( this.props.searchQuery ) ) {
+		if ( ! this.props.searchQuery ) {
 			return;
 		}
 
-		const results = getAdminSectionsResults(
-			this.props.searchQuery,
-			this.props.siteId,
-			this.props.siteSlug
-		);
+		const results = getAdminSectionsResults( this.props.searchQuery, this.props.siteSlug );
 
-		if ( isEmpty( results ) ) {
+		if ( results.length < 1 ) {
 			return;
 		}
 
@@ -157,17 +150,13 @@ class InlineHelpSearchResults extends Component {
 	}
 }
 
-const mapStateToProps = ( state, ownProps ) => {
-	const siteId = getSelectedSiteId( state ) || getPrimarySiteId( state );
-	return {
-		lastRoute: getLastRouteAction( state ),
-		searchResults: getInlineHelpSearchResultsForQuery( state, ownProps.searchQuery ),
-		isSearching: isRequestingInlineHelpSearchResultsForQuery( state, ownProps.searchQuery ),
-		selectedResultIndex: getSelectedResultIndex( state ),
-		siteSlug: getSiteSlug( state, siteId ),
-		siteId,
-	};
-};
+const mapStateToProps = ( state, ownProps ) => ( {
+	lastRoute: getLastRouteAction( state ),
+	searchResults: getInlineHelpSearchResultsForQuery( state, ownProps.searchQuery ),
+	isSearching: isRequestingInlineHelpSearchResultsForQuery( state, ownProps.searchQuery ),
+	selectedResultIndex: getSelectedResultIndex( state ),
+	siteSlug: getSiteSlug( state, getSelectedSiteId( state ) ),
+} );
 
 const mapDispatchToProps = {
 	recordTracksEvent,
