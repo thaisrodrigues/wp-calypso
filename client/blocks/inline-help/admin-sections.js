@@ -254,7 +254,8 @@ export function filterListBySearchTerm( searchTerm = '', collection = [] ) {
 			item =>
 				searchRegex.test( item.title ) || intersection( item.synonyms, searchTermWords ).length
 		)
-		.map( item => ( { ...item, type: 'internal', key: item.title } ) );
+		.map( item => ( { ...item, type: 'internal', key: item.title } ) )
+		.slice( 0, 4 );
 }
 
 /**
