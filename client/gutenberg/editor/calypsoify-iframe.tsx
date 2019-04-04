@@ -5,7 +5,7 @@
  */
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { endsWith, flow, get, map, pickBy, startsWith } from 'lodash';
+import { endsWith, get, map, pickBy, startsWith } from 'lodash';
 import url from 'url';
 
 /**
@@ -31,7 +31,7 @@ import { Placeholder } from './placeholder';
 import WebPreview from 'components/web-preview';
 import { trashPost } from 'state/posts/actions';
 import { getEditorPostId } from 'state/ui/editor/selectors';
-import { protectForm } from 'lib/protect-form';
+import { protectForm, ProtectedFormProps } from 'lib/protect-form';
 
 /**
  * Style dependencies
@@ -75,7 +75,7 @@ enum EditorActions {
 	TrashPost = 'trashPost',
 }
 
-class CalypsoifyIframe extends Component< Props & ConnectedProps, State > {
+class CalypsoifyIframe extends Component< Props & ConnectedProps & ProtectedFormProps, State > {
 	state: State = {
 		isMediaModalVisible: false,
 		isIframeLoaded: false,
@@ -273,13 +273,13 @@ class CalypsoifyIframe extends Component< Props & ConnectedProps, State > {
 			return;
 		}
 
-			this.iframePort.postMessage( {
-				action: 'insertClassicBlockMedia',
-				payload: {
-					editorId: this.state.classicBlockEditorId,
-					media: markup,
-				},
-			} );
+		this.iframePort.postMessage( {
+			action: 'insertClassicBlockMedia',
+			payload: {
+				editorId: this.state.classicBlockEditorId,
+				media: markup,
+			},
+		} );
 	};
 
 	pressThis = () => {
@@ -289,10 +289,10 @@ class CalypsoifyIframe extends Component< Props & ConnectedProps, State > {
 			return;
 		}
 
-			this.iframePort.postMessage( {
-				action: 'pressThis',
-				payload: pressThis,
-			} );
+		this.iframePort.postMessage( {
+			action: 'pressThis',
+			payload: pressThis,
+		} );
 	};
 
 	updateImageBlocks = ( action: { data: { mime_type: string; URL: string }; type: string } ) => {
@@ -397,10 +397,7 @@ class CalypsoifyIframe extends Component< Props & ConnectedProps, State > {
 	}
 }
 
-const mapStateToProps = (
-	state,
-	{ postId, postType, duplicatePostId }: { postId: number; postType: string; duplicatePostId: any }
-) => {
+const mapStateToProps = ( state, { postId, postType, duplicatePostId }: Props ) => {
 	const siteId = getSelectedSiteId( state );
 	const currentRoute = getCurrentRoute( state );
 	const postTypeTrashUrl = getPostTypeTrashUrl( state, postType );
@@ -447,12 +444,7 @@ const mapDispatchToProps = {
 	trashPost,
 };
 
-const enhance = flow(
-	protectForm,
-	connect(
-		mapStateToProps,
-		mapDispatchToProps
-	)
-);
-
-export default enhance( CalypsoifyIframe );
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)( protectForm( CalypsoifyIframe ) );
