@@ -19,7 +19,7 @@ import { getCurrentUser } from 'state/current-user/selectors';
 import { writeComment, deleteComment, replyComment } from 'state/comments/actions';
 import { recordAction, recordGaEvent, recordTrackForPost } from 'reader/stats';
 import { isCommentableDiscoverPost } from 'blocks/comments/helper';
-import { ProtectFormGuard } from 'lib/protect-form/index.tsx';
+import { ProtectFormGuard } from 'lib/protect-form';
 import PostCommentFormTextarea from './form-textarea';
 
 /**
