@@ -238,7 +238,7 @@ const adminSections = memoize( siteSlug => [
 		title: 'Download the WordPress.com app for my device',
 		description: 'Get WordPress apps for all your screens.',
 		link: `/me/get-apps`,
-		synonyms: [ 'android', 'iphone', 'mobile', 'desktop' ],
+		synonyms: [ 'android', 'iphone', 'mobile', 'desktop', 'phone' ],
 		icon: 'my-sites',
 	},
 ] );
