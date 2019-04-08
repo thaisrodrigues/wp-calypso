@@ -35,6 +35,13 @@ const adminSections = memoize( siteSlug => [
 		icon: 'domains',
 	},
 	{
+		title: 'Add a site redirect',
+		description: 'Redirect your site to another domain.',
+		link: `/domains/add/site-redirect/${ siteSlug }`,
+		synonyms: [ 'domain', 'forward' ],
+		icon: 'domains',
+	},
+	{
 		title: 'Change my password',
 		description: '',
 		link: '/me/security',
@@ -107,6 +114,14 @@ const adminSections = memoize( siteSlug => [
 		title: "Change my site's timezone",
 		description: '',
 		link: `/settings/general/${ siteSlug }`,
+		synonyms: [ 'time', 'date' ],
+		icon: 'cog',
+	},
+	{
+		title: 'Launch my site',
+		description: 'Switch your site from private to public.',
+		link: `/settings/general/${ siteSlug }`,
+		synonyms: [ 'private', 'public' ],
 		icon: 'cog',
 	},
 	{
@@ -219,20 +234,28 @@ const adminSections = memoize( siteSlug => [
 		synonyms: [ 'purchases', 'invoices', 'pending', 'payment', 'credit card' ],
 		icon: 'credit-card',
 	},
+	{
+		title: 'Download the WordPress.com app for my device',
+		description: 'Get WordPress apps for all your screens.',
+		link: `/me/get-apps`,
+		synonyms: [ 'android', 'iphone', 'mobile', 'desktop' ],
+		icon: 'my-sites',
+	},
 ] );
 
 /**
  * Returns a filtered site admin collection
  *
- * @param {String} searchTerm The search term
- * @param {Array} collection A collection of site admin objects
- * @returns {Array?} An filtered array
+ * @param   {String} searchTerm The search term
+ * @param   {Array}  collection A collection of site admin objects
+ * @param   {Number} limit      The maximum number of results to show
+ * @returns {Array}             A filtered (or empty) array
  */
-export function filterListBySearchTerm( searchTerm = '', collection = [] ) {
+export function filterListBySearchTerm( searchTerm = '', collection = [], limit = 4 ) {
 	const searchTermWords = words( searchTerm ).map( word => word.toLowerCase() );
 
 	if ( searchTermWords.length < 1 ) {
-		return;
+		return [];
 	}
 
 	const searchRegex = new RegExp(
@@ -255,20 +278,21 @@ export function filterListBySearchTerm( searchTerm = '', collection = [] ) {
 				searchRegex.test( item.title ) || intersection( item.synonyms, searchTermWords ).length
 		)
 		.map( item => ( { ...item, type: 'internal', key: item.title } ) )
-		.slice( 0, 4 );
+		.slice( 0, limit );
 }
 
 /**
  * Returns a filtered site admin collection using the memoized adminSections.
  *
- * @param {String} searchTerm The search term
- * @param {String} siteSlug The current site slug
- * @returns {Array} An filtered array
+ * @param   {String} searchTerm The search term
+ * @param   {String} siteSlug   The current site slug
+ * @param   {Number} limit      The maximum number of results to show
+ * @returns {Array}             A filtered (or empty) array
  */
-export function getAdminSectionsResults( searchTerm = '', siteSlug ) {
+export function getAdminSectionsResults( searchTerm = '', siteSlug, limit ) {
 	if ( ! searchTerm ) {
-		return;
+		return [];
 	}
 
-	return filterListBySearchTerm( searchTerm, adminSections( siteSlug || '' ) );
+	return filterListBySearchTerm( searchTerm, adminSections( siteSlug || '' ), limit );
 }

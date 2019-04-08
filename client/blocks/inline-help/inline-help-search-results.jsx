@@ -10,6 +10,7 @@ import { localize } from 'i18n-calypso';
 import classNames from 'classnames';
 import page from 'page';
 import Gridicon from 'gridicons';
+import config from 'config';
 
 /**
  * Internal Dependencies
@@ -27,7 +28,7 @@ import {
 import { getLastRouteAction } from 'state/ui/action-log/selectors';
 import { setSearchResults, selectResult } from 'state/inline-help/actions';
 import { getContextResults } from './contextual-help';
-import { getAdminSectionsResults } from './admin-sections';
+import { getAdminSectionsResults } from 'blocks/inline-help/admin-sections';
 import { localizeUrl } from 'lib/i18n-utils';
 import { getSiteSlug } from 'state/sites/selectors';
 import { getSelectedSiteId } from 'state/ui/selectors';
@@ -134,7 +135,15 @@ class InlineHelpSearchResults extends Component {
 		this.props.openResult( event );
 	};
 
-	onInternalLinkClick = ( { target: { href } } ) => href && page( href );
+	onInternalLinkClick = ( { target: { href } } ) => {
+		if ( href ) {
+			this.props.recordTracksEvent( 'calypso_inlinehelp_admin_section_search', {
+				link: href,
+				search_term: this.props.searchQuery,
+			} );
+			page( href );
+		}
+	};
 
 	render() {
 		return (
@@ -144,7 +153,7 @@ class InlineHelpSearchResults extends Component {
 					requesting={ this.props.isSearching }
 				/>
 				{ this.renderSearchResults() }
-				{ this.renderAdminSectionResults() }
+				{ config.isEnabled( 'help/admin-section-search' ) && this.renderAdminSectionResults() }
 			</div>
 		);
 	}
