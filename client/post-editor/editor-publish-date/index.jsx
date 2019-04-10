@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import classNames from 'classnames';
 import Gridicon from 'gridicons';
-import { intersection } from 'lodash';
+import { flowRight as compose, get, intersection } from 'lodash';
 
 /**
  * Internal dependencies
@@ -20,6 +20,9 @@ import Button from 'components/button';
 import PostScheduler from './post-scheduler';
 import * as utils from 'state/posts/utils';
 import { getSelectedSite } from 'state/ui/selectors';
+import { applySiteOffset } from 'lib/site/timezone';
+import { gmtOffset, timezone } from 'lib/site/utils';
+import { withLocalizedMoment } from 'components/localized-moment';
 
 /**
  * Style dependencies
@@ -35,6 +38,8 @@ export class EditorPublishDate extends React.Component {
 	state = {
 		isOpen: false,
 	};
+
+	publishDateRef = React.createRef();
 
 	componentWillUnmount() {
 		window.removeEventListener( 'click', this.handleOutsideClick );
@@ -59,9 +64,8 @@ export class EditorPublishDate extends React.Component {
 		const hasDatePickerDayClass =
 			intersection( targetClasses, [ 'DayPicker-Day', 'date-picker__day' ] ).length > 0;
 
-		const isChildOfPublishDate = ReactDom.findDOMNode(
-			this.refs.editorPublishDateWrapper
-		).contains( event.target );
+		const publishDateEl = ReactDom.findDOMNode( this.publishDateRef.current );
+		const isChildOfPublishDate = publishDateEl.contains( event.target );
 
 		if ( ! hasDatePickerDayClass && ! isChildOfPublishDate ) {
 			this.setState( { isOpen: false } );
@@ -129,6 +133,16 @@ export class EditorPublishDate extends React.Component {
 		);
 	}
 
+	getSelectedDay() {
+		const { post, site } = this.props;
+		const selectedDay = get( post, 'date', null );
+
+		return applySiteOffset( selectedDay, {
+			timezone: timezone( site ),
+			gmtOffset: gmtOffset( site ),
+		} );
+	}
+
 	renderHeader() {
 		const isScheduled = utils.isFutureDated( this.props.post );
 		const isBackDated = utils.isBackDated( this.props.post );
@@ -138,9 +152,9 @@ export class EditorPublishDate extends React.Component {
 			'is-back-dated': isBackDated,
 			'is-published': isPublished,
 		} );
-		const selectedDay = this.props.post && this.props.post.date ? this.props.post.date : null;
 
 		return (
+			/* eslint-disable jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */
 			<div className={ className } onClick={ this.toggleOpenState }>
 				<Gridicon className="editor-publish-date__header-icon" icon="calendar" size={ 18 } />
 				<div className="editor-publish-date__header-wrapper">
@@ -149,17 +163,18 @@ export class EditorPublishDate extends React.Component {
 					</div>
 					{ ( isScheduled || isBackDated || isPublished ) && (
 						<div className="editor-publish-date__header-chrono">
-							{ this.props.moment( selectedDay ).calendar() }
+							{ this.props.moment( this.getSelectedDay() ).calendar() }
 						</div>
 					) }
 				</div>
 				<Gridicon className="editor-publish-date__header-chevron" icon="chevron-down" size={ 18 } />
 			</div>
+			/* eslint-enable jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */
 		);
 	}
 
 	renderSchedule() {
-		const selectedDay = this.props.post && this.props.post.date ? this.props.post.date : null;
+		const selectedDay = get( this.props.post, 'date', null );
 
 		const isScheduled = utils.isFutureDated( this.props.post );
 		const className = classNames( 'editor-publish-date__schedule', {
@@ -187,7 +202,7 @@ export class EditorPublishDate extends React.Component {
 
 		return (
 			<div className={ className }>
-				<div className="editor-publish-date__wrapper" ref="editorPublishDateWrapper">
+				<div className="editor-publish-date__wrapper" ref={ this.publishDateRef }>
 					{ this.renderHeader() }
 					{ this.state.isOpen && this.renderSchedule() }
 				</div>
@@ -196,8 +211,10 @@ export class EditorPublishDate extends React.Component {
 	}
 }
 
-export default connect( state => {
-	return {
+export default compose(
+	connect( state => ( {
 		site: getSelectedSite( state ),
-	};
-} )( localize( EditorPublishDate ) );
+	} ) ),
+	localize,
+	withLocalizedMoment
+)( EditorPublishDate );
