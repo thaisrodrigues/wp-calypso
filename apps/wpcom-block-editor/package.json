@@ -23,9 +23,9 @@
 	},
 	"dependencies": {
 		"@wordpress/data": "4.4.0",
-		"@wordpress/blocks": "6.0.7",
-		"@wordpress/hooks": "2.0.5",
-		"@wordpress/url": "2.3.3",
+		"@wordpress/blocks": "6.2.2",
+		"@wordpress/hooks": "2.2.0",
+		"@wordpress/url": "2.5.0",
 		"jquery": "^1.12",
 		"lodash": "4.17.11",
 		"react": "16.8.6"
