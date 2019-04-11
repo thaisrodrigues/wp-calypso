@@ -338,6 +338,21 @@ function getWebpackConfig( {
 		);
 	}
 
+	// List of polyfills that we skip including in the evergreen bundle.
+	// CoreJS polyfills are automatically dropped using the browserslist definitions; no need to include them here.
+	const polyfillsSkippedInEvergreen = [
+		// Local storage used to throw errors in Safari private mode, but that's no longer the case in Safari >=11.
+		/^lib[/\\]local-storage-polyfill$/,
+	];
+
+	if ( browserslistEnv === 'evergreen' ) {
+		for ( const polyfill of polyfillsSkippedInEvergreen ) {
+			webpackConfig.plugins.push(
+				new webpack.NormalModuleReplacementPlugin( polyfill, 'lodash/noop' )
+			);
+		}
+	}
+
 	return webpackConfig;
 }
 
