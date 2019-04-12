@@ -97,7 +97,7 @@ class Team extends React.Component {
 				<InfiniteList
 					key={ key }
 					items={ this.props.users }
-					id="people-selector-infinite-list"
+					className="team-list__infinite is-people"
 					ref={ this.infiniteList }
 					fetchingNextPage={ this.props.fetchingUsers }
 					lastPage={ this.isLastPage() }
