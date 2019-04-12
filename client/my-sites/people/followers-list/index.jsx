@@ -162,7 +162,7 @@ const Followers = localize(
 				return <EmptyContent title={ emptyTitle } />;
 			}
 
-			let headerText = '';
+			let headerText;
 			if ( this.props.totalFollowers ) {
 				headerText = this.props.translate(
 					'You have %(number)d follower',
@@ -232,7 +232,12 @@ const Followers = localize(
 
 			return (
 				<div>
-					<PeopleListSectionHeader isFollower label={ headerText } site={ this.props.site }>
+					<PeopleListSectionHeader
+						isFollower
+						isPlaceholder={ this.props.fetching || this.props.fetchOptions.search }
+						label={ headerText }
+						site={ this.props.site }
+					>
 						{ downloadListLink && (
 							<Button href={ downloadListLink } compact>
 								{ this.props.translate( 'Download Data as CSV' ) }
