@@ -167,8 +167,9 @@ const Followers = localize(
 				headerText = this.props.translate(
 					'You have %(number)d follower',
 					'You have %(number)d followers',
-					{
+					{ 
 						args: { number: this.props.totalFollowers },
+						count: this.props.totalUsers,
 					}
 				);
 
@@ -176,7 +177,10 @@ const Followers = localize(
 					headerText = this.props.translate(
 						'You have %(number)d email follower',
 						'You have %(number)d email followers',
-						{ args: { number: this.props.totalFollowers } }
+						{ 
+							args: { number: this.props.totalFollowers },
+							count: this.props.totalUsers,
+						}
 					);
 				}
 			}
